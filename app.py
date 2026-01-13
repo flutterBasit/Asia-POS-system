@@ -112,4 +112,24 @@ def delete_product(id):
     db.session.commit()
     return redirect(url_for('products'))
 
+# billing (POS) page
+@app.route('/billing',methods=['GET', 'POST'])
+@login_required
+def billing():
+    products = Product.query.all()
 
+    if request.method == 'POST':
+           product_id = int(request.form['prodcut'])
+           qunatity = int(request.form['quantity'])
+
+           product = Product.query.get(product_id)
+
+           ##checking the stock availablity 
+           if product.quantity >= qunatity:
+               product.quantity -= qunatity ## reduct the stock qunatity 
+               db.session.commit()
+               flash("Sale completed successfully!")
+           else:
+               flash("Insufficient stock!")
+
+    return render_template('billing.html', products=products)
