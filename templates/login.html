@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Asia POS Login</title>
+</head>
+<body>
+
+<h2>Asia Pipes POS Login</h2>
+
+<!-- Login Form -->
+<form method="POST">
+    <input name="username" placeholder="Username"><br><br>
+    <input name="password" type="password" placeholder="Password"><br><br>
+    <button type="submit">Login</button>
+</form>
+
+<!-- Display error messages -->
+{% with messages = get_flashed_messages() %}
+{% for msg in messages %}
+<p style="color:red">{{ msg }}</p>
+{% endfor %}
+{% endwith %}
+
+</body>
+</html>

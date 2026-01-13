@@ -1,0 +1,26 @@
+<h2>Products</h2>
+
+<a href="/add_product">Add Product</a>
+
+<table border="1">
+<tr>
+    <th>Name</th>
+    <th>Category</th>
+    <th>Price</th>
+    <th>Quantity</th>
+    <th>Action</th>
+</tr>
+
+<!-- Loop through products -->
+{% for p in products %}
+<tr>
+    <td>{{ p.name }}</td>
+    <td>{{ p.category }}</td>
+    <td>{{ p.price }}</td>
+    <td>{{ p.quantity }}</td>
+    <td>
+        <a href="/delete_product/{{ p.id }}">Delete</a>
+    </td>
+</tr>
+{% endfor %}
+</table>
