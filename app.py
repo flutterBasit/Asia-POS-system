@@ -133,3 +133,34 @@ def billing():
                flash("Insufficient stock!")
 
     return render_template('billing.html', products=products)
+
+## logout route 
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user() ## End user session
+    return redirect(url_for('login'))
+
+### -----------------------INITIAL DATA---------------------
+@app.before_first_request
+def create_tables():
+    db.create_all() ##creating tables
+
+    ###if no user exists, create admin user 
+    if not User.query.first():
+        admin = User(username ="admin",password = "admin123", role = "admin")
+        db.session.add(admin)
+
+        ## dummy products for the shop
+        products=[
+            Product(name= "PVC pipe 1 inch", category = "Pipes", price = 250, quantity = 100),
+            Product(name="Gas Pipe", category="Gas", price=400, quantity=50),
+            Product(name="Geyser 25L", category="Geyser", price=18000, quantity=10),
+            Product(name="Water Filter", category="Filter", price=12000, quantity=15)
+        ]
+        db.session.add_all(products)
+        db.session.commit()
+
+## running the flask app 
+if __name__ == '__main__':
+    app.run(debug=True)
