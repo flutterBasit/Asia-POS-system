@@ -76,3 +76,224 @@ button {
 button:hover {
     background: #1b5fa7;
 }
+
+
+/* ---------- LOGIN PAGE LAYOUT ---------- */
+
+/* ---------- LOGIN PAGE LAYOUT ---------- */
+
+.login-wrapper {
+    display: flex;
+    height: 100vh;
+    padding: 20px; /* This creates the space around the edges */
+    box-sizing: border-box; /* Ensures padding doesn't cause overflow */
+    gap: 20px; /* This creates the specific space BETWEEN the image and form */
+    background: #f4f6f9; /* Match this to your login-form background */
+}
+
+/* LEFT IMAGE PANEL */
+.login-image {
+    width: 60%;
+    position: relative;
+    background: linear-gradient(
+        rgba(0, 0, 0, 0.55),
+        rgba(0, 0, 0, 0.55)
+    ),
+    url("../static/asia gas pipes.png") center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* ROUNDED CORNERS */
+    border-radius: 20px; 
+    overflow: hidden; /* Ensures the background image respects the corners */
+}
+
+/* RIGHT LOGIN PANEL */
+.login-form {
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Removed background here so it matches the wrapper */
+}
+
+/* Slightly bigger card for login */
+.login-form .card {
+    width: 85%;
+    max-width: 400px;
+    background: white; /* Optional: adds a card feel to the form */
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* Branding text over image */
+.login-image .branding {
+    color: #ffffff; /* Set base color to pure white */
+    text-align: center;
+    z-index: 1;    /* Ensures text stays above the background layers */
+}
+
+.login-image h1 {
+    color: #ffffff; /* Force white for the heading */
+    font-size: 48px;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Adds a subtle shadow for better readability */
+}
+
+.login-image p {
+    color: #e0e0e0; /* A very light gray/off-white for the subtext */
+    font-size: 18px;
+    opacity: 1;      /* Increased from 0.9 to 1 for maximum visibility */
+}
+
+/* ---------- DASHBOARD LAYOUT ---------- */
+
+.dashboard-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* SIDEBAR */
+
+/* ---------- DASHBOARD LAYOUT ---------- */
+
+/* Reset to fix the scrollbar issues seen in your first image */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f4f6f9;
+}
+
+.dashboard-wrapper {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* SIDEBAR FIX: Ensuring vertical stacking */
+.sidebar {
+    width: 260px;
+    min-width: 260px;
+    background: #1e293b;
+    color: white;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column; /* Stacks children vertically */
+}
+
+.sidebar h2 {
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 24px;
+    letter-spacing: 1px;
+}
+
+.sidebar nav {
+    display: flex;
+    flex-direction: column; /* Forces links to be one per line */
+}
+
+.sidebar nav a {
+    display: block; /* Takes full width of sidebar */
+    color: #cbd5e1;
+    text-decoration: none;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    transition: 0.3s;
+    font-size: 16px;
+}
+
+.sidebar nav a:hover {
+    background: #334155;
+    color: white;
+}
+
+/* Red Logout Button */
+.sidebar .logout {
+    background: #991b1b;
+    color: white;
+    margin-top: 20px;
+}
+
+.sidebar .logout:hover {
+    background: #7f1d1d;
+}
+
+/* MAIN AREA */
+
+
+/* DASHBOARD CARDS FIX: Putting text inside the boxes */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.stat-card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    text-align: center; /* Centers the text and numbers inside */
+    border: 1px solid #e2e8f0;
+}
+
+.stat-card h5 {
+    color: #64748b;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.stat-card h2 {
+    color: #1e293b;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+/* WATERMARK */
+/* MAIN AREA */
+/* MAIN AREA */
+/* MAIN AREA */
+.main-content {
+    flex: 1;
+    padding: 40px;
+    position: relative;
+    overflow-y: auto; 
+    display: flex;
+    flex-direction: column;
+    height: 100vh; 
+    box-sizing: border-box;
+
+    /* --- FIX FOR FULL SCREEN WATERMARK --- */
+    background-color: #f4f6f946; /* Base background color */
+    background-image: url("../static/asia gas pipes.png");
+    background-repeat: no-repeat;
+    background-position: center; /* Keeps it in the middle */
+    background-size: 1100px; /* Size of the logo in the middle */
+   
+    /* This creates the 'faded' watermark effect */
+    background-blend-mode: overlay; 
+}
+
+/* Ensure footer stays at the very bottom */
+.footer {
+    text-align: center;
+    margin-top: auto; 
+    padding-top: 60px;
+    padding-bottom: 20px;
+    color: white;
+    z-index: 1;
+}
