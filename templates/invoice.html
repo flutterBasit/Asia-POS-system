@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="card shadow">
+  <div class="card-body">
+    <h3>Invoice</h3>
+    <hr>
+    <p><strong>Product:</strong> {{ sale.product_name }}</p>
+    <p><strong>Quantity:</strong> {{ sale.quantity }}</p>
+    <p><strong>Unit Price:</strong> Rs. {{ sale.unit_price }}</p>
+    <h4>Total: Rs. {{ sale.total_price }}</h4>
+  </div>
+</div>
+
+<a href="/dashboard" class="btn btn-primary mt-3">Back to Dashboard</a>
+
+{% endblock %}

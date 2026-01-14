@@ -1,9 +1,30 @@
-<h2>Dashboard</h2>
+{% extends 'base.html' %}
+{% block content %}
 
-<!-- Show product count -->
-<p>Total Products: {{ total_products }}</p>
+<div class="row">
+  <div class="col-md-6">
+    <div class="card shadow">
+      <div class="card-body">
+        <h5>Total Products</h5>
+        <h2>{{ total_products }}</h2>
+      </div>
+    </div>
+  </div>
 
-<!-- Navigation links -->
-<a href="/products">Manage Products</a><br>
-<a href="/billing">Billing (POS)</a><br>
-<a href="/logout">Logout</a>
+  <div class="col-md-6">
+    <div class="card shadow">
+      <div class="card-body">
+        <h5>Total Sales</h5>
+        <h2>Rs. {{ total_sales }}</h2>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<a href="/products" class="btn btn-primary">Manage Products</a>
+<a href="/billing" class="btn btn-success">Billing</a>
+<a href="/sales_report" class="btn btn-secondary">Sales Report</a>
+
+{% endblock %}

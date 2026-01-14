@@ -1,26 +1,29 @@
+<div class="container">
+<div class="card">
+
 <h2>Products</h2>
+<a href="/add_product"><button>Add Product</button></a>
 
-<a href="/add_product">Add Product</a>
-
-<table border="1">
+<table width="100%" cellpadding="10">
 <tr>
-    <th>Name</th>
-    <th>Category</th>
-    <th>Price</th>
-    <th>Quantity</th>
-    <th>Action</th>
+    <th>Name</th><th>Category</th><th>Price</th><th>Qty</th><th>Action</th>
 </tr>
 
-<!-- Loop through products -->
 {% for p in products %}
 <tr>
     <td>{{ p.name }}</td>
     <td>{{ p.category }}</td>
-    <td>{{ p.price }}</td>
+    <td>Rs {{ p.price }}</td>
     <td>{{ p.quantity }}</td>
     <td>
-        <a href="/delete_product/{{ p.id }}">Delete</a>
+        <a href="/delete_product/{{ p.id }}"
+           onclick="return confirm('Delete product?')">
+           ❌ Delete
+        </a>
     </td>
 </tr>
 {% endfor %}
 </table>
+
+</div>
+</div>

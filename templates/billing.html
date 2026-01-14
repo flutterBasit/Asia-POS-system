@@ -1,24 +1,26 @@
-<h2>Billing</h2>
+<div class="container">
+<div class="card">
 
-<!-- POS form -->
+<h2>Billing (POS)</h2>
+
 <form method="POST">
-    <select name="product">
+    <select name="product" required>
         {% for p in products %}
         <option value="{{ p.id }}">
-            {{ p.name }} (Stock: {{ p.quantity }})
+            {{ p.name }} — Stock: {{ p.quantity }}
         </option>
         {% endfor %}
-    </select><br><br>
+    </select>
 
-    <input name="quantity" type="number" placeholder="Quantity"><br><br>
+    <input name="quantity" type="number" min="1" required>
     <button>Sell</button>
 </form>
 
-<!-- Show messages -->
-{% with messages = get_flashed_messages() %}
-{% for msg in messages %}
+{% for msg in get_flashed_messages() %}
 <p>{{ msg }}</p>
 {% endfor %}
-{% endwith %}
 
-<a href="/dashboard">Back</a>
+<a href="/dashboard">⬅ Back</a>
+
+</div>
+</div>
