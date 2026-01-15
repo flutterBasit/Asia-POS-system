@@ -1,29 +1,114 @@
-<div class="container">
-<div class="card">
+{% extends 'base.html' %}
+{% block content %}
 
-<h2>Products</h2>
-<a href="/add_product"><button>Add Product</button></a>
+<div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <h2 style="color: #1e293b; font-size: 28px;">Manage Inventory</h2>
+    <!-- Instead of link, open modal -->
+    <!-- <button class="btn-primary" id="openAddProductModal">➕ Add New Product</button> -->
+</div>
 
-<table width="100%" cellpadding="10">
-<tr>
-    <th>Name</th><th>Category</th><th>Price</th><th>Qty</th><th>Action</th>
-</tr>
+<!-- Flash Notification -->
+<div id="flash-message" class="flash-message" style="display:none;"></div>
 
-{% for p in products %}
-<tr>
-    <td>{{ p.name }}</td>
-    <td>{{ p.category }}</td>
-    <td>Rs {{ p.price }}</td>
-    <td>{{ p.quantity }}</td>
-    <td>
-        <a href="/delete_product/{{ p.id }}"
-           onclick="return confirm('Delete product?')">
-           ❌ Delete
-        </a>
-    </td>
-</tr>
-{% endfor %}
-</table>
+
+<div class="stat-card">
+
+    <!-- Scrollable table -->
+    <div class="table-wrapper">
+        <table class="inventory-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock Qty</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in products %}
+                <tr>
+                    <td><strong>{{ p.name }}</strong></td>
+                    <td><span class="badge">{{ p.category }}</span></td>
+                    <td>Rs {{ p.price }}</td>
+                    <td>{{ p.quantity }}</td>
+                    <td>
+                        <a href="/delete_product/{{ p.id }}" 
+                           class="btn-delete"
+                           onclick="return confirmDelete('{{ p.name }}')">
+                           🗑️ Delete
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add Product Button -->
+    <div class="add-product-btn-container">
+        <button class="btn-primary" id="openAddProductModal">➕ Add New Product</button>
+    </div>
 
 </div>
+
+
+<!-- Add Product Modal -->
+<div id="addProductModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Add New Product</h2>
+        <form method="POST" action="/add_product" class="pos-form" id="addProductForm">
+            <label>Product Name</label>
+            <input name="name" placeholder="e.g., PVC Pipe 1 inch" required>
+            
+            <label>Category</label>
+            <input name="category" placeholder="Pipes, Gas, Geyser, Filter" required>
+            
+            <div style="display: flex; gap: 20px;">
+                <div style="flex: 1;">
+                    <label>Price (Rs)</label>
+                    <input name="price" type="number" step="0.01" placeholder="0.00" required>
+                </div>
+                <div style="flex: 1;">
+                    <label>Stock Quantity</label>
+                    <input name="quantity" type="number" placeholder="0" required>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 20px; padding: 15px;">
+                💾 Save Product
+            </button>
+        </form>
+    </div>
 </div>
+
+<!-- JS -->
+<script id="flask-messages-data" type="application/json">
+    {{ get_flashed_messages(with_categories=true) | tojson }}
+</script>
+
+<script>
+    // 2. Read that data safely in JS
+    const dataElement = document.getElementById('flask-messages-data');
+    const flashedMessages = JSON.parse(dataElement.textContent);
+
+    // Modal Logic
+    const modal = document.getElementById("addProductModal");
+    const btn = document.getElementById("openAddProductModal");
+    const span = document.querySelector(".modal .close");
+
+    if (btn) btn.onclick = () => modal.style.display = "block";
+    if (span) span.onclick = () => modal.style.display = "none";
+    window.onclick = (e) => { if(e.target == modal) modal.style.display = "none"; }
+
+    function confirmDelete(name){
+        return confirm(`Are you sure you want to delete "${name}"?`);
+    }
+</script>
+
+<script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
+
+
+{% endblock %}
+
