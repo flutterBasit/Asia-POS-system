@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="invoice-wrapper">
+
+    <h2 style="text-align:center">Customer Invoice</h2>
+
+    <div class="invoice-box">
+
+        <p><strong>Customer Name:</strong> {{ customer.name }}</p>
+        <p><strong>Contact:</strong> {{ customer.phone }}</p>
+        <p><strong>Address:</strong> {{ customer.address }}</p>
+
+        <table class="inventory-table" style="margin-top:20px">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Qty</th>
+                    <th>Unit</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in cart %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.qty }}</td>
+                    <td>Rs {{ item.price }}</td>
+                    <td>Rs {{ item.price * item.qty }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h3 style="text-align:right; margin-top:20px">
+            Grand Total: Rs {{ grand_total }}
+        </h3>
+
+    </div>
+
+    <div class="invoice-actions">
+        <button onclick="window.print()" class="btn-primary">
+            🖨 Print Invoice
+        </button>
+        <a href="/billing" class="btn-primary">
+            ⬅ Back
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

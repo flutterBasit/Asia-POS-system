@@ -474,3 +474,78 @@ body {
     justify-content: center;
     margin-top: 20px;
 }
+/* BILLING LAYOUT */
+.billing-layout {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 25px;
+}
+
+/* Left panel */
+.billing-left select,
+.billing-left input {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+/* Right panel */
+.billing-right input {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.bill-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Flash message */
+#flash-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #16a34a;
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1.3;
+    box-shadow: 0 10px 20px rgba(0,0,0,.25);
+    display: none;
+    z-index: 100000;
+}
+
+.invoice-wrapper {
+    max-width: 900px;
+    margin: auto;
+}
+
+.invoice-box {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,.1);
+}
+
+.invoice-actions {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+@media print {
+    .sidebar,
+    .invoice-actions {
+        display: none;
+    }
+
+    body {
+        background: white;
+    }
+
+    .main-content {
+        padding: 0;
+    }
+}

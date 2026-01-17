@@ -1,26 +1,72 @@
-<div class="container">
-<div class="card">
+{% extends 'base.html' %}
+{% block content %}
 
-<h2>Billing (POS)</h2>
+<h2 style="margin-bottom:20px;">Billing (POS)</h2>
 
-<form method="POST">
-    <select name="product" required>
-        {% for p in products %}
-        <option value="{{ p.id }}">
-            {{ p.name }} — Stock: {{ p.quantity }}
-        </option>
-        {% endfor %}
-    </select>
+<div class="billing-layout">
 
-    <input name="quantity" type="number" min="1" required>
-    <button>Sell</button>
-</form>
+    <!-- LEFT: PRODUCT SELECTION -->
+    <div class="stat-card billing-left">
+        <h3>Add Product</h3>
 
-{% for msg in get_flashed_messages() %}
-<p>{{ msg }}</p>
-{% endfor %}
+        <select id="productSelect">
+            {% for p in products %}
+            <option 
+                value="{{ p.id }}"
+                data-name="{{ p.name }}"
+                data-price="{{ p.price }}">
+                {{ p.name }} — Stock: {{ p.quantity }}
+            </option>
+            {% endfor %}
+        </select>
 
-<a href="/dashboard">⬅ Back</a>
+        <input type="number" id="quantityInput" min="1" placeholder="Quantity">
 
+        <button class="btn-primary" onclick="addToCart()">➕ Add to Bill</button>
+    </div>
+
+    <!-- RIGHT: BILL / CART -->
+    <div class="stat-card billing-right">
+
+        <h3>Customer Details</h3>
+        <input id="customerName" placeholder="Customer Name">
+        <input id="customerPhone" placeholder="Contact Number">
+        <input id="customerAddress" placeholder="Address">
+
+        <h3 style="margin-top:20px;">Bill</h3>
+
+        <table class="inventory-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Qty</th>
+                    <th>Unit</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="cartTable">
+                <!-- JS inserts rows -->
+            </tbody>
+        </table>
+
+        <h3 id="grandTotal" style="text-align:right; margin-top:15px;">
+            Total: Rs 0
+        </h3>
+
+        <div class="bill-actions">
+            <button class="btn-primary" onclick="confirmInvoice()">
+    ✔ Confirm & Generate Invoice
+</button>
+
+
+            <button class="btn-primary" onclick="downloadBill()">⬇ Download</button>
+        </div>
+
+    </div>
 </div>
-</div>
+
+<!-- <div id="flash-message" class="flash-message"></div> -->
+
+<script src="{{ url_for('static', filename='js/billing.js') }}"></script>
+
+{% endblock %}

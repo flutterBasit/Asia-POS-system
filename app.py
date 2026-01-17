@@ -1,5 +1,5 @@
 
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import (
     LoginManager, UserMixin,
@@ -195,7 +195,19 @@ def billing():
 
     return render_template('billing.html', products=products)
 
+
 # ---------------- INVOICE ----------------
+@app.route('/save_invoice', methods=['POST'])
+@login_required
+def save_invoice():
+    data = request.get_json()
+
+    session['invoice'] = {
+        "customer": data['customer'],
+        "cart": data['cart']
+    }
+
+    return {"success": True}
 
 @app.route('/invoice/<int:sale_id>')
 @login_required
@@ -206,6 +218,41 @@ def invoice(sale_id):
         return redirect(url_for('billing'))
     return render_template('invoice.html', sale=sale)
 
+
+@app.route('/invoice_preview')
+@login_required
+def invoice_preview():
+    invoice = session.get('invoice')
+
+    if not invoice:
+        flash("No invoice data found", "error")
+        return redirect(url_for('billing'))
+
+    cart = invoice.get('cart', [])
+    customer = invoice.get('customer', {})
+
+    if not cart:
+        flash("Bill is empty", "error")
+        return redirect(url_for('billing'))
+
+    grand_total = sum(
+        item['price'] * item['qty'] for item in cart
+    )
+
+    return render_template(
+        'invoice_preview.html',
+        cart=cart,
+        customer=customer,
+        grand_total=grand_total
+    )
+
+@app.route('/prepare_invoice', methods=['POST'])
+@login_required
+def prepare_invoice():
+    data = request.get_json()
+    session['invoice'] = data
+    return jsonify(success=True)
+
 # ---------------- SALES REPORT ----------------
 
 @app.route('/sales_report')
@@ -215,6 +262,7 @@ def sales_report():
         'sales_report.html',
         sales=Sale.query.order_by(Sale.date.desc()).all()
     )
+
 
 # ---------------- LOGOUT ----------------
 
