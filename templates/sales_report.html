@@ -1,58 +1,49 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Sales Report</title>
+{% extends 'base.html' %}
+{% block content %}
 
-    <!-- Load CSS from static folder -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
+<h2 style="margin-bottom:20px;">Sales Report</h2>
 
-<div class="container">
-<div class="card">
+<div class="stat-card" style="overflow-x:auto;">
 
-    <h2>Sales Report</h2>
-
-    {% if sales %}
-    <table width="100%" cellpadding="10">
+{% if sales %}
+<table class="inventory-table">
+    <thead>
         <tr>
             <th>Date</th>
+            <th>Customer</th>
+            <th>Contact</th>
             <th>Product</th>
-            <th>Quantity</th>
+            <th>Qty</th>
             <th>Unit Price</th>
             <th>Total</th>
         </tr>
+    </thead>
 
-        {% set grand_total = 0 %}
-        {% for s in sales %}
+    <tbody>
+    {% for s in sales %}
+    <tr>
+        <td>{{ s.date.strftime('%d-%m-%Y %H:%M') }}</td>
+        <td>{{ s.customer_name }}</td>
+        <td>{{ s.customer_phone }}</td>
+        <td>{{ s.product_name }}</td>
+        <td>{{ s.quantity }}</td>
+        <td>Rs {{ s.price }}</td>
+        <td>Rs {{ s.total }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+
+    <tfoot>
         <tr>
-            <td>{{ s.date.strftime('%d-%m-%Y %H:%M') }}</td>
-            <td>{{ s.product_name }}</td>
-            <td>{{ s.quantity }}</td>
-            <td>Rs {{ s.price }}</td>
-            <td>Rs {{ s.total }}</td>
-
-        </tr>
-        {% set grand_total = grand_total + s.total %}
-        {% endfor %}
-
-        <tr>
-            <th colspan="4" style="text-align:right">Grand Total</th>
+            <th colspan="6" style="text-align:right;">Grand Total</th>
             <th>Rs {{ grand_total }}</th>
         </tr>
-    </table>
+    </tfoot>
+</table>
 
-    {% else %}
-        <p>No sales recorded yet.</p>
-    {% endif %}
-
-    <br>
-    <a href="/dashboard">
-        <button>⬅ Back to Dashboard</button>
-    </a>
+{% else %}
+<p>No sales recorded yet.</p>
+{% endif %}
 
 </div>
-</div>
-
-</body>
-</html>
+{% endblock %}

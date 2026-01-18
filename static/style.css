@@ -500,6 +500,16 @@ body {
     gap: 15px;
     margin-top: 20px;
 }
+.bill-actions .btn-primary {
+    font-size: 13px;
+    padding: 6px 12px;
+}
+
+/* Add to bill button */
+.billing-left .btn-primary {
+    font-size: 13px;
+    padding: 7px 12px;
+}
 
 /* Flash message */
 #flash-toast {
@@ -548,4 +558,26 @@ body {
     .main-content {
         padding: 0;
     }
+}
+
+/* ===============================
+   BILLING SCROLL FIX
+   =============================== */
+
+.billing-right {
+    overflow: visible;
+}
+
+.billing-right .inventory-table {
+    display: block;
+    max-height: 260px;
+    overflow-y: auto;
+}
+/* Qty buttons inside billing table */
+.inventory-table button {
+    padding: 2px 6px;
+    font-size: 12px;
+    min-width: 22px;
+    height: 22px;
+    border-radius: 4px;
 }

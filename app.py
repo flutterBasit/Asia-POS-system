@@ -39,11 +39,17 @@ class Product(db.Model):
 
 class Sale(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    product_name = db.Column(db.String(100), nullable=False)
-    quantity = db.Column(db.Integer, nullable=False)
-    price = db.Column(db.Float, nullable=False)
-    total = db.Column(db.Float, nullable=False)
+    customer_name = db.Column(db.String(100))
+    customer_phone = db.Column(db.String(50))
+    customer_address = db.Column(db.String(200))
+
+    product_name = db.Column(db.String(100))
+    quantity = db.Column(db.Integer)
+    price = db.Column(db.Float)
+    total = db.Column(db.Float)
+
     date = db.Column(db.DateTime, default=db.func.now())
+
 
 # --------------------------------------------------
 # LOGIN HANDLER
@@ -218,31 +224,25 @@ def invoice(sale_id):
         return redirect(url_for('billing'))
     return render_template('invoice.html', sale=sale)
 
-
 @app.route('/invoice_preview')
 @login_required
 def invoice_preview():
     invoice = session.get('invoice')
 
     if not invoice:
-        flash("No invoice data found", "error")
+        flash("No invoice found", "error")
         return redirect(url_for('billing'))
 
-    cart = invoice.get('cart', [])
-    customer = invoice.get('customer', {})
+    customer = invoice['customer']
+    cart = invoice['cart']
 
-    if not cart:
-        flash("Bill is empty", "error")
-        return redirect(url_for('billing'))
-
-    grand_total = sum(
-        item['price'] * item['qty'] for item in cart
-    )
+    grand_total = 0
+    for item in cart:
+        grand_total += float(item['price']) * int(item['qty'])
 
     return render_template(
         'invoice_preview.html',
-        cart=cart,
-        customer=customer,
+        invoice=invoice,
         grand_total=grand_total
     )
 
@@ -250,19 +250,91 @@ def invoice_preview():
 @login_required
 def prepare_invoice():
     data = request.get_json()
-    session['invoice'] = data
-    return jsonify(success=True)
+
+    cart = data.get('cart', [])
+    customer = data.get('customer', {})
+
+    if not cart:
+        return jsonify({"error": "Cart is empty"}), 400
+
+    if not customer.get('name') or not customer.get('phone'):
+        return jsonify({"error": "Customer details missing"}), 400
+
+    # CLEAR old invoice first
+    session.pop('invoice', None)
+
+    session['invoice'] = {
+        'customer': customer,
+        'cart': cart
+    }
+
+    return jsonify({"success": True})
+
+
+@app.route('/confirm_invoice', methods=['POST'])
+@login_required
+def confirm_invoice():
+    invoice = session.get('invoice')
+
+    if not invoice:
+        flash("No invoice data found", "error")
+        return redirect(url_for('billing'))
+
+    customer = invoice['customer']
+    cart = invoice['cart']
+
+    grand_total = 0
+
+    for item in cart:
+        if 'id' not in item:
+            continue
+
+        product = Product.query.get(int(item['id']))
+        if not product:
+            continue
+
+        price = float(item['price'])        # 🔥 FIX
+        qty = int(item['qty'])               # 🔥 FIX
+        total = price * qty                  # 🔥 FIX
+
+        grand_total += total
+
+        sale = Sale(
+            customer_name=customer['name'],
+            customer_phone=customer['phone'],
+            customer_address=customer.get('address'),
+            product_name=item['name'],
+            quantity=qty,
+            price=price,
+            total=total
+        )
+
+        product.quantity -= qty
+        db.session.add(sale)
+
+    db.session.commit()
+
+    invoice['grand_total'] = grand_total
+    session['invoice'] = invoice
+
+    return redirect(url_for('invoice_preview'))
 
 # ---------------- SALES REPORT ----------------
 
 @app.route('/sales_report')
 @login_required
 def sales_report():
-    return render_template(
-        'sales_report.html',
-        sales=Sale.query.order_by(Sale.date.desc()).all()
+    sales = Sale.query.order_by(Sale.date.desc()).all()
+
+    grand_total = sum(
+        (s.total or 0) for s in sales
     )
 
+    return render_template(
+        'sales_report.html',
+        sales=sales,
+        grand_total=grand_total
+    )
 
 # ---------------- LOGOUT ----------------
 

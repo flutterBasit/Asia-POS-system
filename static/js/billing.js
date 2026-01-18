@@ -1,27 +1,39 @@
 let cart = [];
 let total = 0;
 
+const customerName = document.getElementById("customerName");
+const customerPhone = document.getElementById("customerPhone");
+const customerAddress = document.getElementById("customerAddress");
+
+
 function addToCart() {
     const select = document.getElementById("productSelect");
     const qty = parseInt(document.getElementById("quantityInput").value);
 
     if (!qty || qty <= 0) return;
 
-    const name = select.selectedOptions[0].dataset.name;
-    const price = parseFloat(select.selectedOptions[0].dataset.price);
+    const option = select.selectedOptions[0];
 
-    const existing = cart.find(item => item.name === name);
+    const id = option.value;  // <-- IMPORTANT
+    const name = option.dataset.name;
+    const price = parseFloat(option.dataset.price);
+
+    // const existing = cart.find(item => item.name === name);
+    const existing = cart.find(item => item.id === id);
+
 
     if (existing) {
         existing.qty += qty;
         existing.itemTotal = existing.qty * existing.price;
     } else {
-        cart.push({
-            name,
-            qty,
-            price,
-            itemTotal: price * qty
-        });
+       cart.push({
+    id: id,              // ✅ REQUIRED FOR BACKEND
+    name: name,
+    qty: qty,
+    price: price,
+    itemTotal: price * qty
+    });
+
     }
 
     calculateTotal();
@@ -58,10 +70,13 @@ function changeQty(index, delta) {
 
     if (cart[index].qty <= 0) {
         cart.splice(index, 1);
+    } else {
+        cart[index].itemTotal = cart[index].qty * cart[index].price;
     }
 
     renderCart();
 }
+
 function removeItem(index) {
     cart.splice(index, 1);
     renderCart();
@@ -113,13 +128,65 @@ function confirmInvoice() {
         body: JSON.stringify({
             customer: {
                 name: name,
-                phone: customerPhone.value,
+                phone: phone,
                 address: customerAddress.value
             },
             cart: cart
         })
     })
-    .then(() => {
+    .then(res => {
+        if (!res.ok) throw new Error("Prepare failed");
+        return fetch("/confirm_invoice", { method: "POST" });
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Save failed");
         window.location.href = "/invoice_preview";
+    })
+    .then(() => {
+        setTimeout(() => window.print(), 500);
+    })
+    .catch(err => {
+        alert("Invoice failed");
+        console.error(err);
+    });
+}
+
+function printQuotation() {
+
+    if (cart.length === 0) {
+        alert("Bill is empty. Add at least one product.");
+        return;
+    }
+
+    const name = customerName.value.trim();
+    const phone = customerPhone.value.trim();
+
+    if (!name || !phone) {
+        alert("Customer name and phone are required.");
+        return;
+    }
+
+    fetch("/prepare_invoice", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            customer: {
+                name: name,
+                phone: phone,
+                address: customerAddress.value
+            },
+            cart: cart
+        })
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Failed");
+        window.location.href = "/invoice_preview";
+    })
+    .then(() => {
+        setTimeout(() => window.print(), 500);
+    })
+    .catch(err => {
+        alert("Quotation failed");
+        console.error(err);
     });
 }

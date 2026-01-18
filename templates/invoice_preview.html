@@ -1,28 +1,30 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="invoice-wrapper">
+<div class="stat-card invoice-wrapper">
 
-    <h2 style="text-align:center">Customer Invoice</h2>
+    <h2 style="text-align:center; margin-bottom:20px;">
+        Customer Invoice
+    </h2>
 
     <div class="invoice-box">
 
-        <p><strong>Customer Name:</strong> {{ customer.name }}</p>
-        <p><strong>Contact:</strong> {{ customer.phone }}</p>
-        <p><strong>Address:</strong> {{ customer.address }}</p>
+        <p><strong>Customer Name:</strong> {{ invoice.customer.name }}</p>
+        <p><strong>Contact:</strong> {{ invoice.customer.phone }}</p>
+        <p><strong>Address:</strong> {{ invoice.customer.address }}</p>
 
-        <table class="inventory-table" style="margin-top:20px">
+        <table class="inventory-table" style="margin-top:20px; width:100%">
             <thead>
                 <tr>
                     <th>Product</th>
                     <th>Qty</th>
-                    <th>Unit</th>
+                    <th>Unit Price</th>
                     <th>Total</th>
                 </tr>
             </thead>
 
             <tbody>
-                {% for item in cart %}
+                {% for item in invoice.cart %}
                 <tr>
                     <td>{{ item.name }}</td>
                     <td>{{ item.qty }}</td>
@@ -33,17 +35,19 @@
             </tbody>
         </table>
 
-        <h3 style="text-align:right; margin-top:20px">
+        <h3 style="text-align:right; margin-top:20px;">
             Grand Total: Rs {{ grand_total }}
         </h3>
 
     </div>
 
-    <div class="invoice-actions">
+    <!-- ACTION BUTTONS -->
+    <div class="invoice-actions" style="margin-top:30px; text-align:right;">
         <button onclick="window.print()" class="btn-primary">
             🖨 Print Invoice
         </button>
-        <a href="/billing" class="btn-primary">
+
+        <a href="{{ url_for('billing') }}" class="btn-primary" style="margin-left:10px;">
             ⬅ Back
         </a>
     </div>
